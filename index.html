@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Video</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px 20px;
+            background: #f2f2f7;
+        }
+
+        .box {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+        }
+
+        input {
+            width: 90%;
+            padding: 14px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #007aff;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        #qrcode {
+            margin-top: 25px;
+        }
+
+        #player {
+            display: none;
+            margin-top: 30px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div id="creator">
+
+        <h1>📱 QR Video</h1>
+
+        <p>Video-Adresse eingeben:</p>
+
+        <input
+            id="videoURL"
+            type="url"
+            placeholder="https://example.com/video.mp4"
+        >
+
+        <br>
+
+        <button onclick="createQR()">
+            QR-Code erstellen
+        </button>
+
+        <div id="qrcode"></div>
+
+    </div>
+
+
+    <div id="player">
+
+        <h1>🎬 Video bereit</h1>
+
+        <p>Tippe auf Start, um das Video abzuspielen.</p>
+
+        <button onclick="startVideo()">
+            ▶️ Video starten
+        </button>
+
+        <video id="video" controls playsinline></video>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+
+function createQR() {
+
+    const url = document.getElementById("videoURL").value;
+
+    if (url === "") {
+        alert("Bitte zuerst eine Video-Adresse eingeben.");
+        return;
+    }
+
+    document.getElementById("qrcode").innerHTML = "";
+
+    /*
+       Für den Moment speichern wir die Video-Adresse
+       in der URL.
+    */
+
+    const pageURL =
+        window.location.href.split("?")[0] +
+        "?video=" +
+        encodeURIComponent(url);
+
+    new QRCode(document.getElementById("qrcode"), {
+        text: pageURL,
+        width: 250,
+        height: 250
+    });
+}
+
+
+function loadVideo() {
+
+    const params = new URLSearchParams(window.location.search);
+
+    const videoURL = params.get("video");
+
+    if (videoURL) {
+
+        document.getElementById("creator").style.display = "none";
+        document.getElementById("player").style.display = "block";
+
+        document.getElementById("video").src = videoURL;
+    }
+}
+
+
+function startVideo() {
+
+    const video = document.getElementById("video");
+
+    video.volume = 0.8;
+
+    video.play();
+}
+
+
+loadVideo();
+
+</script>
+
+</body>
+</html>
