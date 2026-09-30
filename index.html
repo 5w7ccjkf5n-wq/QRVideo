@@ -44,13 +44,18 @@
             margin-top: 25px;
         }
 
-        #player {
-            display: none;
-            margin-top: 30px;
+        #qrcode img {
+            margin: auto;
         }
 
-        video {
+        #player {
+            display: none;
+        }
+
+        #video {
+            display: none;
             width: 100%;
+            margin-top: 25px;
             border-radius: 15px;
         }
     </style>
@@ -60,10 +65,9 @@
 
 <div class="box">
 
+    <!-- Bereich zum Erstellen des QR-Codes -->
     <div id="creator">
-
         <h1>📱 QR Video</h1>
-
         <p>Video-Adresse eingeben:</p>
 
         <input
@@ -79,15 +83,17 @@
         </button>
 
         <div id="qrcode"></div>
-
     </div>
 
 
+    <!-- Bereich für die Person, die den QR-Code scannt -->
     <div id="player">
 
         <h1>🎬 Video bereit</h1>
 
-        <p>Tippe auf Start, um das Video abzuspielen.</p>
+        <p>
+            Tippe auf „Video starten“, um das Video abzuspielen.
+        </p>
 
         <button onclick="startVideo()">
             ▶️ Video starten
@@ -115,11 +121,6 @@ function createQR() {
 
     document.getElementById("qrcode").innerHTML = "";
 
-    /*
-       Für den Moment speichern wir die Video-Adresse
-       in der URL.
-    */
-
     const pageURL =
         window.location.href.split("?")[0] +
         "?video=" +
@@ -142,9 +143,12 @@ function loadVideo() {
     if (videoURL) {
 
         document.getElementById("creator").style.display = "none";
+
         document.getElementById("player").style.display = "block";
 
-        document.getElementById("video").src = videoURL;
+        // Absichtlich noch KEINE Video-Adresse setzen.
+        // Dadurch wird vorher kein Videobild angezeigt.
+        document.getElementById("video").dataset.url = videoURL;
     }
 }
 
@@ -152,6 +156,12 @@ function loadVideo() {
 function startVideo() {
 
     const video = document.getElementById("video");
+
+    const videoURL = video.dataset.url;
+
+    video.src = videoURL;
+
+    video.style.display = "block";
 
     video.volume = 0.8;
 
